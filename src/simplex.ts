@@ -3,7 +3,10 @@ interface IndiceInterface {
   filas: string[];
 }
 
-export function construirMatriz(fo: string, restricciones: string[]): { matriz: number[][]; indices: IndiceInterface } {
+export function construirMatriz(
+  fo: string,
+  restricciones: string[]
+): { matriz: number[][]; indices: IndiceInterface } {
   const matriz: number[][] = [];
   let indices: IndiceInterface = {
     columnas: [],
@@ -31,30 +34,24 @@ export function construirMatriz(fo: string, restricciones: string[]): { matriz: 
 
   matriz.push(foMatriz.fo.concat(Array(restricciones.length + 1).fill(0)));
 
-  indices.filas.push(...foMatriz.indices);
-
   function crearIndicesColumna(filas: string[]) {
     filas.unshift("💥");
     for (let index = 0; index < restricciones.length + 1; index++) {
       filas.push(index <= 2 ? `S${index + 1}` : "R");
+      indices.filas.push(index === 0 ? "z" : `S${index}`);
     }
     indices.columnas.push(...filas);
   }
   crearIndicesColumna(foMatriz.indices);
 
   restricciones.forEach((val, i) => {
-
     let igualdad = val.indexOf("=");
 
     let miembroIzquierdo = val.slice(0, igualdad);
 
-    let miebroDerecho = val.slice(
-      igualdad + 1,
-      val.length
-    ).trim();
+    let miebroDerecho = val.slice(igualdad + 1, val.length).trim();
 
     let restriccionLimpia = limpiarFuncion(miembroIzquierdo);
-
 
     let nuevaRestriccion = restriccionLimpia.reduce(
       (acc, val, j) => {
@@ -66,12 +63,11 @@ export function construirMatriz(fo: string, restricciones: string[]): { matriz: 
       [0]
     );
 
-
     for (let index = 0; index < restricciones.length; index++) {
-      nuevaRestriccion.push(index===i ? 1 : 0)
+      nuevaRestriccion.push(index === i ? 1 : 0);
     }
 
-    nuevaRestriccion.push(Number(miebroDerecho))
+    nuevaRestriccion.push(Number(miebroDerecho));
 
     matriz.push(nuevaRestriccion);
   });
@@ -142,7 +138,10 @@ function volverCeroValoresSupInf(
 
 export function main(
   initial: { matriz: number[][]; indices?: IndiceInterface },
-  onIteration?: (payload: { matriz: number[][]; indices?: IndiceInterface }, iterIndex: number) => void
+  onIteration?: (
+    payload: { matriz: number[][]; indices?: IndiceInterface },
+    iterIndex: number
+  ) => void
 ) {
   let iter = 0;
   let matriz = initial.matriz;
@@ -159,10 +158,9 @@ export function main(
 
     let filaPivoteI = filaPivoteIndice(columnaPivote, columnaSolucion);
 
-    let aux = indices?.columnas[columnaPivoteI-1];
-
+    let aux = indices?.columnas[columnaPivoteI + 1];
     if (indices) {
-      indices.columnas[columnaPivoteI] = indices.filas[filaPivoteI];
+      indices.columnas[columnaPivoteI + 1] = indices.filas[filaPivoteI];
       indices.filas[filaPivoteI] = aux ?? "";
     }
 
