@@ -88,9 +88,8 @@ function columnaPivoteIndice(matriz: number[][]): number {
 }
 
 function filaPivoteIndice(columnaPivote: number[], columnaSolucion: number[]) {
-  // Calcular ratios seguros (ignorar divisiones por 0 o valores no numéricos)
   const ratios: (number | undefined)[] = columnaSolucion.map((val, i) => {
-    if (i === 0) return undefined; // normalmente la fila 0 es la FO
+    if (i === 0) return undefined;
     const denom = columnaPivote[i];
     if (!denom || denom === 0) return undefined;
     const ratio = val / denom;
@@ -144,7 +143,6 @@ export function main(
   let iter = 0;
   let matriz = initial.matriz;
   let indices = initial.indices;
-  // Report initial matrix as iteration 0
   onIteration?.({ matriz: matriz.map((r) => r.slice()), indices }, iter);
 
   while (matriz[0].some((val) => val < 0)) {

@@ -58,8 +58,6 @@ restriccionesCantidad?.addEventListener('change', (e) => {
   renderRestriccionesInputs(Number(target.value));
 });
 
-// Inicializar con la cantidad por defecto
-// Obtener datos al presionar el botón
 const form = document.getElementById('simplex-form') as HTMLFormElement | null;
 form?.addEventListener('submit', function(e) {
   e.preventDefault();
@@ -71,11 +69,9 @@ form?.addEventListener('submit', function(e) {
     const r = document.getElementById(`restriccion-${i}`) as HTMLInputElement | null;
     restricciones.push(r?.value ?? '');
   }
-  // Aquí puedes usar los datos como necesites
   console.log('Función objetivo:', objetivo);
   console.log('Restricciones:', restricciones);
 
-  // Llamar al motor Simplex importado y mostrar iteraciones
   const inicial = construirMatriz(objetivo, restricciones);
   const resultadosContainer = document.getElementById('resultados-container') as HTMLDivElement | null;
   if (resultadosContainer) resultadosContainer.innerHTML = '';
@@ -93,7 +89,6 @@ form?.addEventListener('submit', function(e) {
     const table = document.createElement('table');
     table.className = 'matriz';
 
-    // header usando indices.columnas si están disponibles
     if (indices && indices.columnas && indices.columnas.length > 0) {
       const thead = document.createElement('thead');
       const htr = document.createElement('tr');
