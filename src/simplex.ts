@@ -12,27 +12,30 @@ export function construirMatriz(
     columnas: [],
     filas: [],
   };
+
+  let foMatriz: { fo: number[]; indices: string[] } = {
+    fo: [1],
+    indices: [],
+  };
+
   function limpiarFuncion(f: string) {
-    return f
-      .trim()
-      .split("")
-      .filter((value) => value !== " ");
+    return f.replace(/\s+/g, "");
   }
 
   let foLimpia = limpiarFuncion(fo);
 
-  let foMatriz = foLimpia.reduce(
-    (acc, val, i) => {
-      if (!isNaN(Number(val))) {
-        acc.fo.push(foLimpia[i - 1] !== "-" ? -Number(val) : Number(val));
-        acc.indices.push(foLimpia[i + 1]);
-      }
-      return acc;
-    },
-    { fo: [1], indices: ["z"] }
+  const matchNumbersRegex = /[0-9]+/g;
+  let numbers = [...foLimpia.matchAll(matchNumbersRegex)].map(
+    (n) => -Number(n[0])
   );
+  foMatriz.fo.push(...numbers);
+
+  const matchVariablesRegex = /[a-zA-Z]+/g;
+  let variables = [...foLimpia.matchAll(matchVariablesRegex)].map((v) => v[0]);
+  foMatriz.indices.push(...variables);
 
   matriz.push(foMatriz.fo.concat(Array(restricciones.length + 1).fill(0)));
+  console.log(matriz);
 
   function crearIndicesColumna(filas: string[]) {
     filas.unshift("💥");
@@ -53,15 +56,10 @@ export function construirMatriz(
 
     let restriccionLimpia = limpiarFuncion(miembroIzquierdo);
 
-    let nuevaRestriccion = restriccionLimpia.reduce(
-      (acc, val, j) => {
-        if (!isNaN(Number(val))) {
-          acc.push(foLimpia[j - 1] !== "-" ? Number(val) : -Number(val));
-        }
-        return acc;
-      },
-      [0]
-    );
+    let nuevaRestriccion = [
+      ...restriccionLimpia.matchAll(matchNumbersRegex),
+    ].map((n) => Number(n[0]));
+    nuevaRestriccion.unshift(0);
 
     for (let index = 0; index < restricciones.length; index++) {
       nuevaRestriccion.push(index === i ? 1 : 0);
